@@ -2,17 +2,24 @@
 
 ## v1.0.0-dev
 
--Enhancements
+- Enhancements
     - Read queries (everything except writes) are now executed directly in the calling process
     - Sending asynchronous queries is now limited to write queries
 
 - Backwards incompatible changes
     - All "administrative query modules" have been removed
+    - Minimum required elixir version is now `~> 1.7`
     - Support for accessing the system environment for configuration has been removed in favor of initializer functions/modules
     - Support for implementing `use Instream.Writer` has been removed in favor of `@behaviour Instream.Writer`
     - Support for singular time units has been removed
     - The default JSON decoder has been switched from `:poison` to `:jason`
     - The query builder has been removed
+
+## v0.22.0 (2019-11-29)
+
+- Enhancements
+    - Errors from `:hackney.body/1` are now passed to the caller instead of raising a `MatchError`
+    - Unix socket usage has been documented
 
 ## v0.21.0 (2019-05-15)
 

@@ -8,7 +8,7 @@ defmodule Instream.MixProject do
       app: :instream,
       name: "Instream",
       version: "1.0.0-dev",
-      elixir: "~> 1.5",
+      elixir: "~> 1.7",
       aliases: aliases(),
       deps: deps(),
       description: "InfluxDB driver for Elixir",
@@ -45,11 +45,12 @@ defmodule Instream.MixProject do
       {:credo, "~> 1.0", only: :dev, runtime: false},
       {:dialyxir, "~> 1.0.0-rc", only: :dev, runtime: false},
       {:ex_doc, ">= 0.0.0", only: :dev, runtime: false},
-      {:excoveralls, "~> 0.11", only: :test, runtime: false},
+      {:excoveralls, "~> 0.12", only: :test, runtime: false},
       {:hackney, "~> 1.1"},
       {:influxql, "~> 0.2.0"},
       {:jason, "~> 1.0"},
-      {:poolboy, "~> 1.5"}
+      {:poolboy, "~> 1.5"},
+      {:ranch, "~> 1.6.0", only: :test}
     ]
   end
 

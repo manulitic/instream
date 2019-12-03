@@ -1,5 +1,7 @@
 alias Instream.TestHelpers.Connections
 
+config = ExUnit.configuration()
+
 # grab ALL helpers and start connections
 File.ls!("test/helpers/connections")
 |> Enum.filter(&String.contains?(&1, "connection"))
@@ -17,8 +19,26 @@ end)
 _ = Connections.DefaultConnection.execute("DROP DATABASE test_database")
 _ = Connections.DefaultConnection.execute("CREATE DATABASE test_database")
 
+# configure unix socket connection
+config =
+  case System.get_env("INFLUXDB_SOCKET") do
+    nil ->
+      IO.puts("Environment variable 'INFLUXDB_SOCKET' not set, skipping unix socket tests")
+
+      Keyword.put(config, :exclude, [:unix_socket | config[:exclude]])
+
+    influxdb_socket ->
+      socket_env =
+        :instream
+        |> Application.get_env(Connections.UnixSocketConnection)
+        |> Keyword.put(:host, URI.encode_www_form(influxdb_socket))
+
+      Application.put_env(:instream, Connections.UnixSocketConnection, socket_env)
+
+      config
+  end
+
 # configure InfluxDB test exclusion
-config = ExUnit.configuration()
 version = to_string(Connections.DefaultConnection.version())
 
 config =
@@ -34,7 +54,7 @@ config =
         if Version.match?(version, "~> #{ver}") do
           acc
         else
-          Keyword.put(acc, :exclude, [{:influxdb_version, ver} | acc[:exclude]])
+          Keyword.put(acc, :exclude, [:"influxdb_exclude_#{ver}" | acc[:exclude]])
         end
       end)
   end

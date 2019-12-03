@@ -15,7 +15,7 @@ Tested InfluxDB versions:
 - `1.4.3`
 - `1.5.5`
 - `1.6.6`
-- `1.7.7`
+- `1.7.9`
 
 (see [`.travis.yml`](https://github.com/mneudert/instream/blob/master/.travis.yml) to be sure)
 
@@ -27,7 +27,7 @@ To use Instream with your projects, edit your `mix.exs` file and add the require
 defp deps do
   [
     # ...
-    {:instream, "~> 0.21"},
+    {:instream, "~> 0.22"},
     # ...
   ]
 end
@@ -89,6 +89,13 @@ config :my_app, MyApp.MyConnection,
   port: 8086,
   scheme: "http",
   writer: Instream.Writer.Line
+```
+
+Please be aware that if you are using the scheme `"http+unix"` you need to encode the socket path yourself:
+
+```
+config :my_app, MyApp.MyConnection,
+  host: URI.encode_www_form("/path/to/influxdb.sock")
 ```
 
 #### Configuration (dynamic)
@@ -160,8 +167,8 @@ config :my_app, MyApp.MyConnection,
   port: 8086,
   scheme: "http",
   writer: Instream.Writer.Line,
-  json_decoder: Poison,
-  json_encoder: Poison
+  json_decoder: {Jason, :decode!, [[keys: :atoms]]},
+  json_encoder: {Jason, :encode!, []}
 ```
 
 This also means that per default the connection uses no authentication.
